@@ -6,9 +6,9 @@ sources:
     schema: jaffle_shop
     description: E-commerce data
     tables:
-      - name: customers
+      - name: customers_v2
         description: One record per person who has purchased one or more items
-      - name: orders
+      - name: orders_v2
         description: One record per order (consisting of one or more order items)
       - name: items
         description: Items included in an order

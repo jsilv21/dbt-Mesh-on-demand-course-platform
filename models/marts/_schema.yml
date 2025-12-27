@@ -1,0 +1,108 @@
+models:
+  - name: fct_orders_v2
+    latest_version: 2
+    description: "Fact table for orders, multiple orders per customer"
+    group: finance
+    access: public
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_id
+        data_type: varchar
+        constraints:
+          - type: not_null          
+      - name: location_id
+        data_type: varchar
+      - name: customer_id
+        data_type: varchar
+      - name: customer_name
+        data_type: varchar
+      - name: location_name
+        data_type: varchar
+      - name: order_total
+        data_type: number
+      - name: tax_paid
+        data_type: number
+      - name: tax_rate
+        data_type: number
+      - name: ordered_at
+        data_type: timestamp_ntz
+      - name: location_opened_at
+        data_type: timestamp_ntz
+      - name: ordered_month
+        data_type: number
+      - name: ordered_day
+        data_type: number
+      - name: ordered_year
+        data_type: number
+    versions:
+      - v: 1
+      - v: 2
+        columns:
+          - name: order_amount ##v2 Adds in new column name and date type change
+            data_type: number
+          - name: location_opened_at
+            data_type: date
+          - include: all #Includes all other fields
+            exclude: [order_total] #But removes the old name of order_total
+  - name: fct_order_items
+    description: "Grain is one row per item within an order. Contains financial and location context."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_item_id
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_type: varchar
+        tests:
+          - not_null
+      - name: product_id
+        data_type: varchar
+      - name: location_id
+        data_type: varchar
+      - name: customer_id
+        data_type: varchar
+      - name: order_total
+        data_type: number
+      - name: tax_paid
+        data_type: number
+      - name: ordered_at
+        data_type: timestamp_ntz
+      - name: customer_name
+        data_type: varchar
+      - name: location_name
+        data_type: varchar
+      - name: tax_rate
+        data_type: number
+      - name: location_opened_at
+        data_type: timestamp_ntz
+  - name: dim_product_supplies
+    description: "Dimensional table for products including supply costs and item categories."
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: product_id
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        data_type: varchar
+      - name: product_type
+        data_type: varchar
+      - name: product_description
+        data_type: varchar
+      - name: product_price
+        data_type: number
+      - name: is_food_item
+        data_type: boolean
+      - name: is_drink_item
+        data_type: boolean
+      - name: supply_cost
+        data_type: number
